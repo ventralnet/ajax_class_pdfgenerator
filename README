@@ -1,0 +1,4 @@
+requires 
+enscript
+ps2pdf
+and an internet connection to download dependencies
