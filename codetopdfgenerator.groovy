@@ -12,9 +12,14 @@ import java.awt.Color
 import groovy.io.FileType
 
 tmpFolder = new File(System.getProperty("java.io.tmpdir"),"tmp${UUID.randomUUID().toString()}")
-tmpFolder.mkdirs()
+def tmpFolderCreated = tmpFolder.mkdirs()
 
 try{
+
+    if (!tmpFolderCreated) {
+        throw new RuntimeException("Unable to create temporary folder.")
+    }
+
     def commandLineArguments = parseCommandLineArguments(args)
 
     def sourceCodeInput = findSourceCodeFiles(commandLineArguments.inputFolder,commandLineArguments.ignoreFolders)
@@ -81,7 +86,14 @@ def createPdfFiles(inputFiles, outputFolder) {
     inputFiles.each{ file -> 
         def tempPostscriptFile = new File(tmpFolder,tmpFilename+'.ps')
         "enscript --color ${file.getAbsolutePath()} -E${getProgrammingLanguage(file)} -o ${tempPostscriptFile.getAbsolutePath()}".execute().waitFor()
-        "ps2pdf ${tempPostscriptFile} ${new File(tmpFolder,tmpFilename+'.pdf')}".execute().waitFor()
+        if (System.properties['os.name'].toLowerCase().indexOf("mac") >= 0) {
+            "pstopdf ${tempPostscriptFile} -o ${new File(tmpFolder,tmpFilename+'.pdf')}".execute().waitFor()
+        } else {
+            "ps2pdf ${tempPostscriptFile} ${new File(tmpFolder,tmpFilename+'.pdf')}".execute().waitFor()
+        }
+        if (!new File(tmpFolder,tmpFilename+'.pdf').exists()) {
+            throw new RuntimeException("Could not convert ps to pdf");
+        }
         if (!tempPostscriptFile.delete()) {
             throw new RuntimeException("Could not delete temp file ${tempPostscriptFile.getAbsolutePath()}")
         }
@@ -256,10 +268,9 @@ def cleanup() {
     try {
         def delClos
 
-        delClos = { println "Dir ${it.canonicalPath}";
+        delClos = { 
                     it.eachDir( delClos );
                     it.eachFile {
-                        println "File ${it.canonicalPath}";
                         it.delete()
                     }
                 it.delete()
