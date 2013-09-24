@@ -233,7 +233,7 @@ def promptForTitlePageInfo() {
     print "Enter server userid: "
     titleInformation.userId = readString(reader)
     print "Enter fullname: "
-    titleInformation.fullName =readString(reader)
+    titleInformation.fullname =readString(reader)
     print "Enter email address: "
     titleInformation.email = readString(reader)
     print "Enter course number (605.787): "
