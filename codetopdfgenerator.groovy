@@ -237,17 +237,20 @@ def promptForTitlePageInfo() {
     print "Enter email address: "
     titleInformation.email = readString(reader)
     print "Enter course number (605.787): "
-    titleInformation.courseNumber = readString(reader) 
-    print "Enter URL to project: "
-    titleInformation.url = readString(reader)
+    titleInformation.courseNumber = readString(reader, true) 
+    if (!titleInformation.courseNumber) {
+        titleInformation.courseNumber = "605.787"
+    }
+    //print "Enter URL to project: "
+    titleInformation.url = "http://web2.apl.jhu.edu:8080/${titleInformation.userId}${titleInformation.assignmentNumber}"//readString(reader)
 
     return titleInformation
 }   
 
-def readString(reader) {
+def readString(reader, allowNull=false) {
     while (true) {
         def string = reader.readLine()
-        if (string) {
+        if (string || allowNull) {
             return string 
         }
         print "Please enter a string: "
