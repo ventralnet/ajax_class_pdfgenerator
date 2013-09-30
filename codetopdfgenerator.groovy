@@ -22,7 +22,7 @@ try{
 
     def commandLineArguments = parseCommandLineArguments(args)
 
-    def sourceCodeInput = findSourceCodeFiles(commandLineArguments.inputFolder,commandLineArguments.ignoreFolders)
+    def sourceCodeInput = findSourceCodeFiles(commandLineArguments.inputFolder)
 
     def pdfFiles = createPdfFiles(sourceCodeInput, commandLineArguments.outputFile.getParentFile())
 
@@ -117,13 +117,13 @@ def getProgrammingLanguage(file) {
     } else if (file.name.endsWith("jsp")) {
         return "html"
     } else if (file.name.endsWith("xml")) {
-        return "xml"
+        return "html"
     }
 }
 
 //This will return source code files in order that is required
 //for ajax class. html first, jsp second, then javascript, java next and css last
-def findSourceCodeFiles(inputFolder,ignoreFolders) {
+def findSourceCodeFiles(inputFolder) {
     def fileList = []
     inputFolder.eachFileRecurse(FileType.FILES) { file ->
         def fileSplit = file.name.split("\\.")
@@ -199,16 +199,10 @@ def parseCommandLineArguments(args) {
     cli.with {
         o longOpt: 'output-file','Output filename (must end in .pdf)',required:true,args:1
         i longOpt: 'input-folder','Folder with your source code',required:true,args:1
-        n longOpt: 'ignore-folders','Comma separated list of folders to omit (for example target folder or bin folder).',args:1
     }
     def options = cli.parse(args)
     if (!options) {
         System.exit(-1)
-    }
-    def ignoreFolders = []
-    if (options.n) {
-        ignoreFolders = options.n
-        ignoreFolders = ignoreFolders.split(",")
     }
     def inputFolder = new File(options.i)    
     if (!inputFolder.exists()) {
@@ -222,7 +216,7 @@ def parseCommandLineArguments(args) {
         cli.usage()
         System.exit(-1)
     }
-    [ignoreFolders:ignoreFolders,inputFolder:inputFolder,outputFile:outputFile]
+    [inputFolder:inputFolder,outputFile:outputFile]
 }
 
 def promptForTitlePageInfo() {
