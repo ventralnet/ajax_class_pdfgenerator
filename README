@@ -1,4 +1,6 @@
 requires 
 enscript
-ps2pdf
+ps2pdf (on linux)
+pstopdf (on mac)
 and an internet connection to download dependencies
+I don't believe this works on windows, but maybe in Cygwin
