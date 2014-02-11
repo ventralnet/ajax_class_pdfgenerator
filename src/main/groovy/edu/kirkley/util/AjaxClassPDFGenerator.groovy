@@ -60,7 +60,7 @@ def appendSourceCodePDF(titlePage, srcPdfFiles, outputFile) {
 }
 
 def createTitlePage() {
-    def titlePageInfo = promptForTitlePageInfo()
+    def titlePageInfo = buildTitlePageInfo()
     def document = new Document()
 
     Font hyperlinkFont = new Font();
@@ -221,36 +221,27 @@ def parseCommandLineArguments(args) {
     [inputFolder:inputFolder,outputFile:outputFile]
 }
 
-def promptForTitlePageInfo() {
-    def reader = new BufferedReader(new InputStreamReader(System.in))
-    def titleInformation = [:]
-    print "Enter assignment number: "
-    titleInformation.assignmentNumber = readInteger(reader) 
-    print "Enter server userid: "
-    titleInformation.userId = readString(reader)
-    print "Enter fullname: "
-    titleInformation.fullname =readString(reader)
-    print "Enter email address: "
-    titleInformation.email = readString(reader)
-    print "Enter course number (605.787): "
-    titleInformation.courseNumber = readString(reader, true) 
-    if (!titleInformation.courseNumber) {
-        titleInformation.courseNumber = "605.787"
-    }
-    //print "Enter URL to project: "
-    titleInformation.url = "http://web2.apl.jhu.edu:8080/${titleInformation.userId}${titleInformation.assignmentNumber}"//readString(reader)
-
+def buildTitlePageInfo() {    
+    def titleInformation = [:]    
+    titleInformation.assignmentNumber = promptForAssignmentNumber()
+    addDataFromPopertiesFile(titleInformation)
+    titleInformation.url = "http://${titleInformation.tomcatHost}:${titleInformation.tomcatPort}/${titleInformation.userId}${titleInformation.assignmentNumber}"
     return titleInformation
-}   
+}
 
-def readString(reader, allowNull=false) {
-    while (true) {
-        def string = reader.readLine()
-        if (string || allowNull) {
-            return string 
-        }
-        print "Please enter a string: "
-    }
+def addDataFromPopertiesFile(titleInformation) {
+    def config = new ConfigSlurper().parse(new File('myconfig.groovy').toURL())
+    titleInformation.userId = config.titleProperties.userInfo.userId
+    titleInformation.fullname = config.titleProperties.userInfo.fullname
+    titleInformation.email = config.titleProperties.userInfo.email
+    titleInformation.courseNumber = config.titleProperties.courseInfo.courseNumber
+    titleInformation.tomcatHost=config.titleProperties.serverConfig.tomcatHost
+    titleInformation.tomcatPort=config.titleProperties.serverConfig.tomcatPort
+}
+
+def promptForAssignmentNumber() {
+    print "Enter assignment number: "
+    return readInteger(new BufferedReader(new InputStreamReader(System.in))) 
 }
 
 def readInteger(reader) {
