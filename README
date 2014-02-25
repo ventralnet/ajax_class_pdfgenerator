@@ -4,3 +4,7 @@ ps2pdf (on linux)
 pstopdf (on mac)
 and an internet connection to download dependencies
 I don't believe this works on windows, but maybe in Cygwin
+
+While it is annoying to include in the git repo. You can find an already
+compiled uberjar in the build/lib folder just in case you don't have the means
+to install groovy (that jar should work with the Sun JVM).
