@@ -78,6 +78,11 @@ def createTitlePage() {
     document.add(new Paragraph(new Chunk(titlePageInfo.email,hyperlinkFont).setAnchor(titlePageInfo.email)))
     document.add(new Paragraph(titlePageInfo.courseNumber))
     document.add(new Paragraph(new Chunk(titlePageInfo.url,hyperlinkFont).setAnchor(titlePageInfo.url)))
+
+    new File("additionalInfo.txt").eachLine { line ->
+        document.add(new Paragraph(new Chunk(line)))
+    }
+
     document.close()
 
     outputFile
