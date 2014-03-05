@@ -1,0 +1,8 @@
+ 
+Want to add some extra information to the title page?
+ 
+Modify additionalInfo.txt to change what shows up here.
+ 
+Remove the contents of this file to get rid of this content.
+
+Newlines will be removed if they don't have some content (aka a whitespace character).
