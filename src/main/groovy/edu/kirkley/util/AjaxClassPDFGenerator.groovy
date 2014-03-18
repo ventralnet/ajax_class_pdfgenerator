@@ -121,7 +121,7 @@ def getProgrammingLanguage(file) {
         return "java"
     } else if (file.name.endsWith("css")) {
         return "javascript"
-    } else if (file.name.endsWith("jsp")) {
+    } else if (file.name.endsWith("jsp") || file.name.endsWith("tag") || file.name.endsWith("tld")) {
         return "html"
     } else if (file.name.endsWith("xml")) {
         return "html"
@@ -131,11 +131,13 @@ def getProgrammingLanguage(file) {
 //This will return source code files in order that is required
 //for ajax class. html first, jsp second, then javascript, java next and css last
 def findSourceCodeFiles(inputFolder) {
+    def config = new ConfigSlurper().parse(new File('myconfig.groovy').toURL())
+    def pageOrder = config.pageOrder
     def fileList = []
     inputFolder.eachFileRecurse(FileType.FILES) { file ->
         def fileSplit = file.name.split("\\.")
         if (fileSplit.length > 1) {
-            if (["java","css","html","xhtml","xml","java","jsp","css","js","javascript"].contains(fileSplit[1].toLowerCase())) {
+            if (pageOrder.contains(fileSplit[1].toLowerCase())) {
                 fileList << file
             }
         }
@@ -149,54 +151,7 @@ def findSourceCodeFiles(inputFolder) {
         if (aExtension == bExtension) {
             return 0
         }   
-        if (aExtension == "html") {
-            return -1
-        } 
-        if (bExtension == "html") {
-            return 1
-        }
-        if (aExtension == "xhtml") {
-            return -1
-        } 
-        if (bExtension == "xhtml") {
-            return 1
-        }
-        if (aExtension == "xml") {
-            return -1
-        } 
-        if (bExtension == "xml") {
-            return 1
-        }
-        if (aExtension == "jsp") {
-            return -1
-        }
-        if (bExtension == "jsp") {
-            return 1
-        }
-        if (aExtension == "js") {
-            return -1
-        }
-        if (bExtension == "js") {
-            return 1
-        }
-        if (aExtension == "javascript") {
-            return -1
-        }
-        if (bExtension == "javascript") {
-            return 1
-        }
-        if (aExtension == "java") {
-            return -1
-        }
-        if (bExtension == "java") {
-            return 1
-        }
-        if (aExtension == "css") {
-            return -1
-        }
-        if (bExtension == "css") {
-            return 1
-        }
+        return pageOrder.indexOf(aExtension).compareTo(pageOrder.indexOf(bExtension))
     } as Comparator
     fileList.sort(comparator)
 }
