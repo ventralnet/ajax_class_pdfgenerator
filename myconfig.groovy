@@ -1,8 +1,8 @@
 titleProperties {
 	userInfo{	
-		userId="serverId"
-		fullname="Full Name"
-		email="user@domain"
+		userId="sjagodz1"
+		fullname="Steve Jagodzinski"
+		email="steve.jagodzinski@gmail.com"
 	}
 	courseInfo{
 		courseNumber="605.787"
@@ -12,3 +12,4 @@ titleProperties {
 		tomcatPort=80
 	}
 }
+pageOrder = ["html","xhtml","xml","jsp","tld","tag","js","javascript","java","css"]
